@@ -9,24 +9,24 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"github.com/neil-berg/chef/handlers"
 )
 
 func main() {
 	logger := log.New(os.Stdout, "chef-api", log.LstdFlags)
 
-	err := godotenv.Load("../.env")
-	if err != nil {
-		logger.Fatal(err)
-	}
+	// err := godotenv.Load("../.env")
+	// if err != nil {
+	// 	logger.Fatal(err)
+	// }
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/test", handlers.GetUsers).Methods("GET")
 
-	port := os.Getenv("SERVER_PORT")
-	address := ":" + port
+	// port := os.Getenv("SERVER_PORT")
+	// address := ":" + port
+	address := ":8080"
 
 	server := http.Server{
 		Addr:         address,
