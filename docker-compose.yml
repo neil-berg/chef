@@ -1,0 +1,26 @@
+version: "3.1"
+
+volumes: 
+  chef_db:
+
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file: 
+      - .env
+    volumes: 
+      - chef_db:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on: 
+      - "database"

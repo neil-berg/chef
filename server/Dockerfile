@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 ## Slimmer production image to hold the built binary
 FROM alpine:latest
-WORKDIR /root/
+WORKDIR /usr/src/app
 COPY --from=builder /app/main .
 
 EXPOSE 8080
