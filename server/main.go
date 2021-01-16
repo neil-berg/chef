@@ -28,9 +28,10 @@ func main() {
 	}
 	logger.Println("Successfully applied DB migrations")
 
+	handler := handlers.CreateHandler(logger, db)
 	router := mux.NewRouter()
 
-	router.HandleFunc("/test", handlers.GetUsers).Methods("GET")
+	router.HandleFunc("/test", handler.CreateUser).Methods("GET")
 
 	serverPort := os.Getenv("SERVER_PORT")
 	serverAddress := ":" + serverPort
