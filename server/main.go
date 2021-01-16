@@ -9,27 +9,28 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/neil-berg/chef/db"
 	"github.com/neil-berg/chef/handlers"
 )
 
 func main() {
 	logger := log.New(os.Stdout, "chef-api", log.LstdFlags)
 
-	// err := godotenv.Load("../.env")
-	// if err != nil {
-	// 	logger.Fatal(err)
-	// }
+	_, err := db.Connect()
+	if err != nil {
+		logger.Fatal("Unable to connect to database")
+	}
+	logger.Println("Connected to DB!")
 
 	router := mux.NewRouter()
 
 	router.HandleFunc("/test", handlers.GetUsers).Methods("GET")
 
-	// port := os.Getenv("SERVER_PORT")
-	// address := ":" + port
-	address := ":8080"
+	serverPort := os.Getenv("SERVER_PORT")
+	serverAddress := ":" + serverPort
 
 	server := http.Server{
-		Addr:         address,
+		Addr:         serverAddress,
 		Handler:      router,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
@@ -37,7 +38,7 @@ func main() {
 	}
 
 	go func() {
-		logger.Println("Server listening on port 8080")
+		logger.Println("Server listening on port: ", serverPort)
 		err := server.ListenAndServe()
 		if err != nil {
 			logger.Fatal(err)
