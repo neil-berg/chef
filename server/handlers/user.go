@@ -10,7 +10,7 @@ import (
 // GetUsers is a test handler
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	mockUser := models.User{
-		ID:       "abc",
+		ID:       1,
 		Email:    "test@example.com",
 		Password: "password",
 	}

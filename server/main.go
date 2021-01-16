@@ -9,18 +9,24 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/neil-berg/chef/db"
+	"github.com/neil-berg/chef/database"
 	"github.com/neil-berg/chef/handlers"
 )
 
 func main() {
 	logger := log.New(os.Stdout, "chef-api", log.LstdFlags)
 
-	_, err := db.Connect()
+	db, err := database.Connect()
 	if err != nil {
 		logger.Fatal("Unable to connect to database")
 	}
 	logger.Println("Connected to DB!")
+
+	err = database.Migrate(db)
+	if err != nil {
+		logger.Fatal("Unable to apply DB migrations")
+	}
+	logger.Println("Successfully applied DB migrations")
 
 	router := mux.NewRouter()
 

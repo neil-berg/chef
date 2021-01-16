@@ -1,9 +1,10 @@
-package db
+package database
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/neil-berg/chef/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -22,4 +23,10 @@ func Connect() (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	return db, err
+}
+
+// Migrate automatically migrates schemas on the DB
+func Migrate(db *gorm.DB) error {
+	err := db.AutoMigrate(&models.User{})
+	return err
 }

@@ -1,8 +1,17 @@
 package models
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 // User defines the user model
 type User struct {
-	ID       string `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID        uint           `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Email     string         `json:"email"`
+	Password  string         `json:"password"`
 }
