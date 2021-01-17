@@ -35,7 +35,7 @@ func main() {
 	handler := handlers.CreateHandler(logger, db)
 	router := mux.NewRouter()
 
-	router.HandleFunc("/test", handler.CreateUser).Methods("GET")
+	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
 
 	serverAddress := ":" + config.ServerPort
 

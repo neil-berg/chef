@@ -1,6 +1,8 @@
 package models
 
 import (
+	"encoding/json"
+	"io"
 	"time"
 
 	"gorm.io/gorm"
@@ -8,10 +10,16 @@ import (
 
 // User defines the user model
 type User struct {
-	ID        uint           `gorm:"primaryKey" json:"id"`
+	ID        uint           `gorm:"primaryKey;autoIncrement" json:"id"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
 	Email     string         `json:"email"`
 	Password  string         `json:"password"`
+}
+
+// ParseBody decodes the JSON-encoded body of the request into a User
+func (user *User) ParseBody(r io.Reader) error {
+	decoder := json.NewDecoder(r)
+	return decoder.Decode(user)
 }
