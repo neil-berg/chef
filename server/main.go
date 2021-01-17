@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	cfg "github.com/neil-berg/chef/config"
 	"github.com/neil-berg/chef/database"
 	"github.com/neil-berg/chef/handlers"
 )
@@ -16,7 +17,10 @@ import (
 func main() {
 	logger := log.New(os.Stdout, "chef-api", log.LstdFlags)
 
-	db, err := database.Connect()
+	config := cfg.Get()
+	logger.Println("Retrieved configuration")
+
+	db, err := database.Connect(config.DBHost, config.DBPort, config.DBName, config.DBUser, config.DBPassword)
 	if err != nil {
 		logger.Fatal("Unable to connect to database")
 	}
@@ -33,8 +37,7 @@ func main() {
 
 	router.HandleFunc("/test", handler.CreateUser).Methods("GET")
 
-	serverPort := os.Getenv("SERVER_PORT")
-	serverAddress := ":" + serverPort
+	serverAddress := ":" + config.ServerPort
 
 	server := http.Server{
 		Addr:         serverAddress,
@@ -45,7 +48,7 @@ func main() {
 	}
 
 	go func() {
-		logger.Println("Server listening on port: ", serverPort)
+		logger.Println("Server listening on port: ", config.ServerPort)
 		err := server.ListenAndServe()
 		if err != nil {
 			logger.Fatal(err)

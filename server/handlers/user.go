@@ -12,8 +12,8 @@ import (
 // CreateUser adds a mock user to the DB
 func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	mockUser := models.User{
-		ID:        1,
-		Email:     "test@example.com",
+		ID:        2,
+		Email:     "test2@example.com",
 		Password:  "password",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
