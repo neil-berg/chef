@@ -12,6 +12,7 @@ type Config struct {
 	DBHost     string
 	DBPort     string
 	ServerPort string
+	JWTSecret  string
 }
 
 // Get returns a pointer to the configuration
@@ -22,6 +23,7 @@ func Get() *Config {
 	dbHost := getEnvWithDefault("POSTGRES_HOST", "database")
 	dbPort := getEnvWithDefault("POSTGRES_PORT", "5432")
 	serverPort := getEnvWithDefault("SERVER_PORT", "8080")
+	jwtSecret := getEnvWithDefault("JWT_SECRET", "jwtSecret")
 
 	return &Config{
 		DBUser:     dbUser,
@@ -30,6 +32,7 @@ func Get() *Config {
 		DBHost:     dbHost,
 		DBPort:     dbPort,
 		ServerPort: serverPort,
+		JWTSecret:  jwtSecret,
 	}
 }
 

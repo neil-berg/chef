@@ -16,6 +16,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
 	Email     string         `json:"email"`
 	Password  string         `json:"password"`
+	Token     string         `json:"token"`
 }
 
 // ParseBody decodes the JSON-encoded body of the request into a User

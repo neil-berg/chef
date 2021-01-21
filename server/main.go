@@ -32,7 +32,7 @@ func main() {
 	}
 	logger.Println("Successfully applied DB migrations")
 
-	handler := handlers.CreateHandler(logger, db)
+	handler := handlers.CreateHandler(logger, db, config)
 	router := mux.NewRouter()
 
 	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
