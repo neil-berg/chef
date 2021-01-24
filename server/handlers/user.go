@@ -37,6 +37,7 @@ func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to create JWT", http.StatusInternalServerError)
 	}
 
+	user.ID = "ABC"
 	user.Password = string(hash)
 	user.Token = tokenString
 

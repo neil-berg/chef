@@ -10,7 +10,7 @@ import (
 
 // User defines the user model
 type User struct {
-	ID        uint           `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID        string         `gorm:"primaryKey" json:"id"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
