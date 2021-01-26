@@ -5,6 +5,7 @@ import (
 	"io"
 	"time"
 
+	"github.com/go-playground/validator"
 	"gorm.io/gorm"
 )
 
@@ -14,8 +15,8 @@ type User struct {
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
-	Email     string         `json:"email"`
-	Password  string         `json:"password"`
+	Email     string         `json:"email" validate:"required,email"`
+	Password  string         `json:"password" validate:"required"`
 	Token     string         `json:"token"`
 }
 
@@ -23,4 +24,10 @@ type User struct {
 func (user *User) ParseBody(r io.Reader) error {
 	decoder := json.NewDecoder(r)
 	return decoder.Decode(user)
+}
+
+// Validate checks for required fields on the user
+func (user *User) Validate() error {
+	validate := validator.New()
+	return validate.Struct(user)
 }

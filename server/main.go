@@ -36,6 +36,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
+	router.HandleFunc("/signin", handler.SignInUser).Methods("POST")
 
 	serverAddress := ":" + config.ServerPort
 
