@@ -20,6 +20,9 @@ type User struct {
 	Token     string         `json:"token"`
 }
 
+// UserContextKey is the key for a user in context
+type UserContextKey string
+
 // ParseBody decodes the JSON-encoded body of the request into a User
 func (user *User) ParseBody(r io.Reader) error {
 	decoder := json.NewDecoder(r)

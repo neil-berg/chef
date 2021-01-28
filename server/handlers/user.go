@@ -99,3 +99,15 @@ func (handler *Handler) SignInUser(w http.ResponseWriter, r *http.Request) {
 	})
 	w.Write([]byte("OK"))
 }
+
+// DeleteMe soft deletes the authorized user from the DB
+func (handler *Handler) DeleteMe(w http.ResponseWriter, r *http.Request) {
+	ctxKey := models.UserContextKey("user")
+	user := r.Context().Value(ctxKey).(models.User)
+
+	result := handler.db.Delete(&user)
+	if result.Error != nil {
+		http.Error(w, "Unable to delete user", http.StatusInternalServerError)
+	}
+	w.Write([]byte("OK!"))
+}
