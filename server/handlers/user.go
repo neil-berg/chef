@@ -12,6 +12,9 @@ import (
 // CreateUser adds a user to the DB
 func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
+
+	user.Recipes = []models.Recipe{{Title: "New Recipe"}}
+
 	err := user.ParseBody(r.Body)
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
@@ -26,7 +29,7 @@ func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Unable to create ID", http.StatusInternalServerError)
 	}
-	user.ID = uuid.String()
+	user.ID = uuid
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 4)
 	if err != nil {

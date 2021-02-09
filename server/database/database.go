@@ -20,6 +20,6 @@ func Connect(host, port, dbname, user, password string) (*gorm.DB, error) {
 
 // Migrate automatically migrates schemas on the DB
 func Migrate(db *gorm.DB) error {
-	err := db.AutoMigrate(&models.User{})
+	err := db.AutoMigrate(&models.User{}, &models.Recipe{})
 	return err
 }

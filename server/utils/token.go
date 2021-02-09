@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 )
 
 // OneWeekMinutes is the number of minutes in a week
@@ -11,7 +12,7 @@ const OneWeekMinutes = 1 * 7 * 24 * 60
 
 // Claims is the payload shape encoded in the JWT
 type Claims struct {
-	UserID string `json:"userId"`
+	UserID uuid.UUID `json:"userId"`
 	jwt.StandardClaims
 }
 
@@ -21,7 +22,7 @@ func OneWeekExpiry() time.Time {
 }
 
 // CreateJWT generates a new JSON Web Token given a user ID and JWT secret
-func CreateJWT(id string, secret string) (string, error) {
+func CreateJWT(id uuid.UUID, secret string) (string, error) {
 	claims := &Claims{
 		UserID: id,
 		StandardClaims: jwt.StandardClaims{
