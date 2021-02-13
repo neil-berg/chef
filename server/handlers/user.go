@@ -13,7 +13,11 @@ import (
 func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
-	user.Recipes = []models.Recipe{{Title: "New Recipe"}}
+	user.Recipes = []models.Recipe{{
+		Title:        "New Recipe",
+		Ingredients:  []string{"a", "b"},
+		Instructions: []string{"j", "K"},
+	}}
 
 	err := user.ParseBody(r.Body)
 	if err != nil {

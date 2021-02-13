@@ -38,8 +38,9 @@ func main() {
 	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
 	router.HandleFunc("/signin", handler.SignInUser).Methods("POST")
 
-	authRouter := router.Methods("POST").Subrouter()
+	authRouter := router.Methods("POST", "GET").Subrouter()
 	authRouter.HandleFunc("/me/delete", handler.DeleteMe)
+	authRouter.HandleFunc("/recipes", handler.GetRecipes)
 	authRouter.Use(handler.CheckToken)
 
 	serverAddress := ":" + config.ServerPort
