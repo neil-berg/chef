@@ -35,13 +35,24 @@ func main() {
 	handler := handlers.CreateHandler(logger, db, config)
 	router := mux.NewRouter()
 
+	// Unauthenticated routes
 	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
 	router.HandleFunc("/signin", handler.SignInUser).Methods("POST")
 
-	authRouter := router.Methods("POST", "GET").Subrouter()
-	authRouter.HandleFunc("/me/delete", handler.DeleteMe)
-	authRouter.HandleFunc("/recipes", handler.GetRecipes)
-	authRouter.Use(handler.CheckToken)
+	// Authenticated GET routes
+	authGetRouter := router.Methods("GET").Subrouter()
+	authGetRouter.HandleFunc("/recipes", handler.GetRecipes)
+	authGetRouter.Use(handler.CheckToken)
+
+	// Authenticated POST routes
+	authPostRouter := router.Methods("POST").Subrouter()
+	authPostRouter.HandleFunc("/recipes/add", handler.AddRecipe)
+	authPostRouter.Use(handler.CheckToken)
+
+	// Authenticated DELETE routes
+	authDeleteRouter := router.Methods("DELETE").Subrouter()
+	authDeleteRouter.HandleFunc("/me/delete", handler.DeleteMe)
+	authDeleteRouter.Use(handler.CheckToken)
 
 	serverAddress := ":" + config.ServerPort
 

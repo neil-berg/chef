@@ -13,43 +13,43 @@ import (
 func (handler *Handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
-	user.Recipes = []models.Recipe{{
-		Title:        "New Recipe",
-		Ingredients:  []string{"a", "b"},
-		Instructions: []string{"j", "K"},
-	}}
-
 	err := user.ParseBody(r.Body)
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
 	}
 
 	err = user.Validate()
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
 	}
 
 	uuid, err := uuid.NewRandom()
 	if err != nil {
 		http.Error(w, "Unable to create ID", http.StatusInternalServerError)
+		return
 	}
 	user.ID = uuid
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 4)
 	if err != nil {
 		http.Error(w, "Unable to hash password", http.StatusInternalServerError)
+		return
 	}
 	user.Password = string(hash)
 
 	token, err := utils.CreateJWT(user.ID, handler.config.JWTSecret)
 	if err != nil {
 		http.Error(w, "Unable to create JWT", http.StatusInternalServerError)
+		return
 	}
 	user.Token = token
 
 	result := handler.db.Create(user)
 	if result.Error != nil {
 		http.Error(w, "Unable to store user", http.StatusInternalServerError)
+		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
@@ -67,11 +67,13 @@ func (handler *Handler) SignInUser(w http.ResponseWriter, r *http.Request) {
 	err := user.ParseBody(r.Body)
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
 	}
 
 	err = user.Validate()
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
 	}
 
 	// Save the plain-text password in the request before over-writing this field
@@ -81,21 +83,25 @@ func (handler *Handler) SignInUser(w http.ResponseWriter, r *http.Request) {
 	result := handler.db.Where(&models.User{Email: user.Email}).Find(user)
 	if result.Error != nil {
 		http.Error(w, "Not found", http.StatusInternalServerError)
+		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		http.Error(w, "Not found", http.StatusInternalServerError)
+		return
 	}
 
 	token, err := utils.CreateJWT(user.ID, handler.config.JWTSecret)
 	if err != nil {
 		http.Error(w, "Unable to create token", http.StatusInternalServerError)
+		return
 	}
 
 	result = handler.db.Model(&user).Update("token", token)
 	if result.Error != nil {
 		http.Error(w, "Unable to update token", http.StatusInternalServerError)
+		return
 	}
 	handler.logger.Printf("Updated token for userId %s", user.ID)
 
@@ -107,14 +113,16 @@ func (handler *Handler) SignInUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
-// DeleteMe soft deletes the authorized user from the DB
+// DeleteMe soft deletes the authorized user and their recipes from the DB
 func (handler *Handler) DeleteMe(w http.ResponseWriter, r *http.Request) {
 	ctxKey := models.UserContextKey("user")
 	user := r.Context().Value(ctxKey).(models.User)
 
-	result := handler.db.Delete(&user)
-	if result.Error != nil {
+	result1 := handler.db.Where("user_id = ?", user.ID).Delete(&models.Recipe{})
+	result2 := handler.db.Delete(&user)
+	if result1.Error != nil || result2.Error != nil {
 		http.Error(w, "Unable to delete user", http.StatusInternalServerError)
+		return
 	}
 	w.Write([]byte("OK!"))
 }
