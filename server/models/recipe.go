@@ -8,7 +8,6 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
-	"gorm.io/gorm"
 )
 
 // Recipe is a basic data shape of a recipe
@@ -17,7 +16,6 @@ type Recipe struct {
 	UserID       uuid.UUID      `json:"userId"` // Foreign key is UserID
 	CreatedAt    time.Time      `json:"createdAt"`
 	UpdatedAt    time.Time      `json:"updatedAt"`
-	DeletedAt    gorm.DeletedAt `json:"deletedAt"`
 	Title        string         `json:"title" validate:"required"`
 	Ingredients  pq.StringArray `gorm:"type:text[]" json:"ingredients" validate:"required"`
 	Instructions pq.StringArray `gorm:"type:text[]" json:"instructions" validate:"required"`

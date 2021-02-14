@@ -113,13 +113,13 @@ func (handler *Handler) SignInUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
-// DeleteMe soft deletes the authorized user and their recipes from the DB
+// DeleteMe deletes the authorized user and their recipes from the DB
 func (handler *Handler) DeleteMe(w http.ResponseWriter, r *http.Request) {
 	ctxKey := models.UserContextKey("user")
 	user := r.Context().Value(ctxKey).(models.User)
 
-	result1 := handler.db.Where("user_id = ?", user.ID).Delete(&models.Recipe{})
-	result2 := handler.db.Delete(&user)
+	result1 := handler.db.Unscoped().Where("user_id = ?", user.ID).Delete(&models.Recipe{})
+	result2 := handler.db.Unscoped().Delete(&user)
 	if result1.Error != nil || result2.Error != nil {
 		http.Error(w, "Unable to delete user", http.StatusInternalServerError)
 		return
