@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -125,4 +126,17 @@ func (handler *Handler) DeleteMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("OK!"))
+}
+
+// AuthMe determines if the user is authenticated or not based on a valif token
+func (handler *Handler) AuthMe(w http.ResponseWriter, r *http.Request) {
+	ctxKey := models.UserContextKey("user")
+	user := r.Context().Value(ctxKey).(models.User)
+
+	bytes, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, "Unable to marshal user", http.StatusInternalServerError)
+		return
+	}
+	w.Write(bytes)
 }

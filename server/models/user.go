@@ -15,7 +15,7 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	Email     string    `json:"email" validate:"required,email"`
-	Password  string    `json:"password" validate:"required"`
+	Password  string    `json:"-" validate:"required"`
 	Token     string    `json:"token"`
 	Recipes   []Recipe  `json:"recipes"` // One-to-many relationship with recipes
 }

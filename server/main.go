@@ -41,6 +41,7 @@ func main() {
 
 	// Authenticated GET routes
 	authGetRouter := router.Methods("GET").Subrouter()
+	authGetRouter.HandleFunc("/auth/me", handler.AuthMe)
 	authGetRouter.HandleFunc("/recipes/{recipeID}", handler.GetRecipe)
 	authGetRouter.HandleFunc("/recipes", handler.GetRecipes)
 	authGetRouter.Use(handler.CheckToken)

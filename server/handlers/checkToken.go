@@ -16,6 +16,7 @@ func (handler *Handler) CheckToken(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("token")
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
 		}
 
 		claims := &utils.Claims{}
@@ -24,6 +25,7 @@ func (handler *Handler) CheckToken(next http.Handler) http.Handler {
 		})
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
 		}
 
 		// Retrieve this user from the DB based on their ID found in the token
@@ -31,6 +33,7 @@ func (handler *Handler) CheckToken(next http.Handler) http.Handler {
 		result := handler.db.First(&user)
 		if result.Error != nil {
 			http.Error(w, "Unauthoirzed", http.StatusUnauthorized)
+			return
 		}
 
 		ctxKey := models.UserContextKey("user")
