@@ -41,6 +41,7 @@ func main() {
 
 	// Authenticated GET routes
 	authGetRouter := router.Methods("GET").Subrouter()
+	authGetRouter.HandleFunc("/recipes/{recipeID}", handler.GetRecipe)
 	authGetRouter.HandleFunc("/recipes", handler.GetRecipes)
 	authGetRouter.Use(handler.CheckToken)
 
@@ -49,8 +50,14 @@ func main() {
 	authPostRouter.HandleFunc("/recipes/add", handler.AddRecipe)
 	authPostRouter.Use(handler.CheckToken)
 
+	// Authenticated PUT routes
+	authPutRouter := router.Methods("PUT").Subrouter()
+	authPutRouter.HandleFunc("/recipes/{recipeID}", handler.UpdateRecipe)
+	authPutRouter.Use(handler.CheckToken)
+
 	// Authenticated DELETE routes
 	authDeleteRouter := router.Methods("DELETE").Subrouter()
+	authDeleteRouter.HandleFunc("/recipes/{recipeID}", handler.DeleteRecipe)
 	authDeleteRouter.HandleFunc("/me/delete", handler.DeleteMe)
 	authDeleteRouter.Use(handler.CheckToken)
 
