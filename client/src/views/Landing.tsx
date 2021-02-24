@@ -40,12 +40,16 @@ export const Landing = () => {
 
   const handleClick = async () => {
     try {
-      const res = await axios.post(process.env.SERVER_URL+'/signup', {
-        email: 'neil@example.com',
-        password: 'red1234',
-      }, {
-        withCredentials: true,
-      })
+      const res = await axios.post(
+        process.env.SERVER_URL + '/signup',
+        {
+          email: 'neil@example.com',
+          password: 'red1234',
+        },
+        {
+          withCredentials: true,
+        },
+      );
       console.log(res);
     } catch (e) {
       console.log(e);
@@ -54,13 +58,16 @@ export const Landing = () => {
 
   const handleAuthMe = async () => {
     try {
-      const res = await axios.post(process.env.SERVER_URL+'/auth/me', {}, { withCredentials: true })
+      const res = await axios.post(
+        process.env.SERVER_URL + '/auth/me',
+        {},
+        { withCredentials: true },
+      );
       console.log(res);
     } catch (e) {
       console.log(e);
     }
   };
-
 
   return (
     <StyledLanding>
