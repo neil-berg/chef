@@ -40,21 +40,27 @@ export const Landing = () => {
 
   const handleClick = async () => {
     try {
-      const res = await axios.get('/api/users/test');
+      const res = await axios.post(process.env.SERVER_URL+'/signup', {
+        email: 'neil@example.com',
+        password: 'red1234',
+      }, {
+        withCredentials: true,
+      })
       console.log(res);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleCookie = async () => {
+  const handleAuthMe = async () => {
     try {
-      const res = await axios.post('/api/users/cookie');
+      const res = await axios.post(process.env.SERVER_URL+'/auth/me', {}, { withCredentials: true })
       console.log(res);
     } catch (e) {
       console.log(e);
     }
   };
+
 
   return (
     <StyledLanding>
@@ -78,15 +84,16 @@ export const Landing = () => {
           <FormattedMessage {...Copy.Tagline} />
         </Heading>
       </div>
-      <button onClick={handleClick}>GET TEST</button>
-      <button onClick={handleCookie}>HANDLE COOKIE</button>
+      <button onClick={handleClick}>SIGN UP TEST</button>
+      <button onClick={handleAuthMe}>AUTH ME</button>
     </StyledLanding>
   );
 };
 
 const StyledLanding = styled.div`
   .${Classes.HeadingContainer} {
-    background-color: ${Colors.backgroundBlack};
+    /* background-color: ${Colors.backgroundBlack}; */
+    background-color: pink;
     display: flex;
     flex-direction: column;
     align-items: center;

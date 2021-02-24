@@ -68,12 +68,9 @@ module.exports = (env) => {
         template: './src/index.html',
         favicon: './src/assets/images/rising.png',
       }),
-      // Set environmental vars
-      new webpack.EnvironmentPlugin({
-        API_URL: isDev
-          ? 'http://localhost:8080'
-          : 'https:TBD.com',
-      }),
+      new webpack.DefinePlugin({
+        'process.env.SERVER_URL': JSON.stringify(process.env.SERVER_URL || 'http://localhost:8080')
+      })
     ],
     // Increase source mapping in development
     devtool: isDev ? 'eval-source-map' : 'eval',
@@ -88,15 +85,6 @@ module.exports = (env) => {
       hot: true,
       // Serve index.html on 404s
       historyApiFallback: true,
-      // Proxy API requests to the backend 
-      // Important to use container name (server) for the host
-      proxy: {
-        '/api': {
-          target: 'http://server:8080',
-          disableHostCheck: true,
-          secure: false,
-        },
-      },
     },
   };
 

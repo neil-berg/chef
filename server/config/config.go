@@ -6,6 +6,7 @@ import (
 
 // Config defines the shape of the server's configuration
 type Config struct {
+	ClientURL  string
 	DBUser     string
 	DBPassword string
 	DBName     string
@@ -17,6 +18,7 @@ type Config struct {
 
 // Get returns a pointer to the configuration
 func Get() *Config {
+	clientURL := getEnvWithDefault("CLIENT_URL", "http://localhost:9090")
 	dbUser := getEnvWithDefault("POSTGRES_USER", "user")
 	dbPassword := getEnvWithDefault("POSTGRES_PASSWORD", "password")
 	dbName := getEnvWithDefault("POSTGRES_DB", "chef")
@@ -26,6 +28,7 @@ func Get() *Config {
 	jwtSecret := getEnvWithDefault("JWT_SECRET", "jwtSecret")
 
 	return &Config{
+		ClientURL:  clientURL,
 		DBUser:     dbUser,
 		DBPassword: dbPassword,
 		DBName:     dbName,

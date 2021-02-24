@@ -128,10 +128,14 @@ func (handler *Handler) DeleteMe(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK!"))
 }
 
-// AuthMe determines if the user is authenticated or not based on a valif token
+// AuthMe determines if the user is authenticated or not based on a valid token
 func (handler *Handler) AuthMe(w http.ResponseWriter, r *http.Request) {
 	ctxKey := models.UserContextKey("user")
 	user := r.Context().Value(ctxKey).(models.User)
+
+	// Remove password and token before sending back to client
+	user.Password = ""
+	user.Token = ""
 
 	bytes, err := json.Marshal(user)
 	if err != nil {

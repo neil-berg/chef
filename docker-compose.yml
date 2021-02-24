@@ -31,6 +31,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9090:9090"
+    volumes: 
+      - ./client/src:/usr/src/app/src
     env_file:
       - .env
     depends_on: 

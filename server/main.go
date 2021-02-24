@@ -12,6 +12,7 @@ import (
 	cfg "github.com/neil-berg/chef/config"
 	"github.com/neil-berg/chef/database"
 	"github.com/neil-berg/chef/handlers"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -36,18 +37,21 @@ func main() {
 	router := mux.NewRouter()
 
 	// Unauthenticated routes
+	router.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello from Chef server!"))
+	}).Methods("GET")
 	router.HandleFunc("/signup", handler.CreateUser).Methods("POST")
 	router.HandleFunc("/signin", handler.SignInUser).Methods("POST")
 
 	// Authenticated GET routes
 	authGetRouter := router.Methods("GET").Subrouter()
-	authGetRouter.HandleFunc("/auth/me", handler.AuthMe)
 	authGetRouter.HandleFunc("/recipes/{recipeID}", handler.GetRecipe)
 	authGetRouter.HandleFunc("/recipes", handler.GetRecipes)
 	authGetRouter.Use(handler.CheckToken)
 
 	// Authenticated POST routes
 	authPostRouter := router.Methods("POST").Subrouter()
+	authPostRouter.HandleFunc("/auth/me", handler.AuthMe)
 	authPostRouter.HandleFunc("/recipes/add", handler.AddRecipe)
 	authPostRouter.Use(handler.CheckToken)
 
@@ -64,9 +68,15 @@ func main() {
 
 	serverAddress := ":" + config.ServerPort
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{config.ClientURL},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowCredentials: true,
+	}).Handler(router)
+
 	server := http.Server{
 		Addr:         serverAddress,
-		Handler:      router,
+		Handler:      corsHandler,
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  1 * time.Second,
 		WriteTimeout: 1 * time.Second,
